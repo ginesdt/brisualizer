@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
+}
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Withdraw {
+  id             Int                   @id @default(autoincrement())
+  l2Chain        Int
+  status         Int                   @default(0)
+  from           String
+  to             String
+  l1Token        String
+  l2Token        String
+  amount         String
+  withdrawalHash String
+  nonce          String?
+  transactions   WithdrawTransaction[]
+  l1Price        Float?
+  l2Price        Float?
+
+  @@unique([l2Chain, withdrawalHash])
+}
+
+model TokenInfo {
+  id          Int            @id @default(autoincrement())
+  chain       Int
+  address     String
+  name        String
+  decimals    Int
+  symbol      String
+  logoUrl     String
+  verified    Boolean
+  stable      Boolean
+  price       String
+  TokenHolder TokenHolding[]
+
+  @@unique([chain, address])
+}
+
+model WithdrawTransaction {
+  id             Int      @id @default(autoincrement())
+  chain          Int
+  txHash         String
+  txFrom         String
+  txTo           String
+  block          Int
+  timestamp      Int
+  withdraw       Withdraw @relation(fields: [withdrawId], references: [id])
+  withdrawId     Int
+  transitionedTo Int?
+
+  @@unique([chain, txHash])
+}
+
+model DepositTransaction {
+  id             Int     @id @default(autoincrement())
+  chain          Int
+  txHash         String
+  txFrom         String
+  txTo           String
+  block          Int
+  timestamp      Int
+  deposit        Deposit @relation(fields: [depositId], references: [id])
+  depositId      Int
+  transitionedTo Int?
+
+  @@unique([chain, txHash])
+}
+
+model Deposit {
+  id           Int                  @id @default(autoincrement())
+  l2Chain      Int
+  status       Int                  @default(0)
+  from         String
+  to           String
+  l1Token      String
+  l2Token      String
+  amount       String
+  nonce        String
+  transactions DepositTransaction[]
+  l1Price      Float?
+  l2Price      Float?
+
+  @@unique([l2Chain, nonce])
+}
+
+model BridgeInformation {
+  id               Int             @id @default(autoincrement())
+  chainId          Int             @unique
+  chainName        String
+  tokens           TokenHolding[]
+  addresses        BridgeAddress[]
+  nativeCoinAmount String
+  nativeCoinPrice  String
+}
+
+model BridgeAddress {
+  id                  Int                @id @default(autoincrement())
+  chain               Int
+  address             String
+  name                String
+  bridgeInformation   BridgeInformation? @relation(fields: [bridgeInformationId], references: [id])
+  bridgeInformationId Int?
+}
+
+model TokenHolding {
+  id                  Int                @id @default(autoincrement())
+  amount              String
+  tokenInfo           TokenInfo          @relation(fields: [tokenInfoId], references: [id])
+  bridgeInformation   BridgeInformation? @relation(fields: [bridgeInformationId], references: [id])
+  bridgeInformationId Int?
+  tokenInfoId         Int
+
+  @@unique([bridgeInformationId, tokenInfoId])
+}
+
+model ProcessedBlock {
+  chainSource   Int
+  chainTarget   Int
+  operationType Int
+  lastBlock     Int
+
+  @@id([chainSource, chainTarget, operationType])
+}
