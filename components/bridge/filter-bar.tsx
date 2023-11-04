@@ -1,6 +1,7 @@
 import Select from 'react-select'
 import {Token} from "@/lib/types";
 import Image from "next/image";
+import {cutCoinName} from "@/lib/api/utils";
 
 
 export function FilterBar ({chainId, address, onChangeAddress, autoRefresh, onChangeAutoRefresh, onChangeFilterCoins, onChangeDepositStatus, onChangeWithdrawStatus, coins, coinsLoading} :
@@ -24,7 +25,7 @@ export function FilterBar ({chainId, address, onChangeAddress, autoRefresh, onCh
               options={coins?.map(c => {return {...c, ...{value: c.address, label: c.name}}})}
               formatOptionLabel={coin => (
                 <div className="flex justify-between">
-                  <span>{coin.name}</span>
+                  <span>{cutCoinName(coin.name)}</span>
                   {coin.logoUrl? <Image width="24" height="24" src={coin.logoUrl} alt={`${coin.name} logo`} /> : <></>}
                 </div>
               )}

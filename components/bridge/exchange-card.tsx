@@ -28,7 +28,7 @@ export default function ExchangeCard({di, coins, statusesNames, isDeposit}: {di:
         <div className={`relative rounded-xl border border-gray-300 bg-gray-50 shadow-md`}>
             <div className="absolute right-1 top-1">
                 <button type="button" className="focus:outline-none text-black bg-gray-200 hover:bg-gray-300 font-medium rounded-md text-sm px-2 py-1 mb-2" onClick={() => setExpanded(false)}>↑</button></div>
-            <div className="flex pt-2">
+            <div className="flex pt-2 justify-between w-11/12">
                 <div className="">
                     <div className="flex px-5">From: <Link className="pl-1 hover:font-medium" href={addressLink(isDeposit ? 1: di.chain, di.from)} target="_blank">{di.from}</Link></div>
                     <div className="flex px-5 pb-2">To: <Link className="pl-1 hover:font-medium" href={addressLink(isDeposit ? di.chain: 1, di.to)} target="_blank">{di.to}</Link></div>
