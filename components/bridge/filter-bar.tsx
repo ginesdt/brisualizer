@@ -10,7 +10,7 @@ export function FilterBar ({chainId, address, onChangeAddress, autoRefresh, onCh
                     coins: Token[] | undefined, coinsLoading: boolean}) {
 
 
-  return <div className={"fixed top-16 w-1/2 flex justify-center" +
+  return <div className={"fixed top-16 w-[1300px] flex justify-center" +
       // " border-b border-x border-gray-400" +
       " rounded-b-full bg-gray-200 backdrop-blur-xl z-30 transition-all pb-1"}>
     <div>
