@@ -33,7 +33,7 @@ export function BridgeInfo({chainId, autoRefresh}: {chainId: number, autoRefresh
   }, {tokens: 0, totalAmount: 0})
 
   return <div className="w-full justify-center pb-5">
-    <div className="w-1/2 m-auto">
+    <div className="w-[1300px] m-auto">
       <h1 className="text-2xl pb-2">{data.bridge.chainName} Bridge</h1>
       <div className="flex grid grid-cols-2">
         <div>
